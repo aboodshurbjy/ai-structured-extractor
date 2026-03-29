@@ -1,0 +1,21 @@
+RFI #2024-047: Clarification on Fire-Rated Partition Assembly at Grid Lines C-D, Level 3
+
+Submitted by: JM Builders (General Contractor)
+Date: March 10, 2026
+Project: Lakeview Community Center Renovation, Phase 2
+
+Description:
+Drawing A3.2, Detail 7 calls for a 2-hour fire-rated partition assembly between the main corridor and the server room at Grid Lines C-D on Level 3. The specified assembly (UL Design No. U419) requires 5/8" Type X gypsum board on each side of 3-5/8" steel studs at 16" o.c.
+
+However, the structural drawings (S2.1) show a steel beam (W12x26) running along Grid Line C at this location, with the bottom flange at 9'-2" above finished floor. The architectural reflected ceiling plan (A5.3) indicates a finished ceiling height of 9'-0" at this corridor.
+
+This creates a conflict: the partition assembly needs to extend full height to the underside of the deck above for the fire rating to be valid, but the steel beam interrupts the stud cavity. The 2" gap between the ceiling and the beam flange is not addressed in any detail.
+
+Questions:
+1. Should the partition assembly wrap around or terminate at the steel beam?
+2. Is a UL-listed safing detail required at the beam penetration?
+3. Does the architect want to lower the ceiling to 8'-10" to conceal the beam, or should a soffit be added?
+
+We need a response by March 17 to avoid delaying the Level 3 framing package.
+
+Attachments: Markup of A3.2 Detail 7, photo of existing beam condition

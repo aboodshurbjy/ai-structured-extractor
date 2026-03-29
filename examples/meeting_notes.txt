@@ -1,0 +1,22 @@
+Project Kickoff — Riverside Mixed-Use Development
+Date: March 15, 2026
+Attendees: Sarah Chen (Project Manager), Mike Torres (Structural Lead), Priya Patel (MEP), David Kim (Architect), Lisa Nguyen (Client Rep)
+
+Sarah opened by confirming the city approved the zoning variance last Thursday. Construction documents need to be 90% complete by June 30 for the July permit submission. She emphasized that the structural and MEP teams need to coordinate early on the parking garage ventilation layout since it overlaps with the seismic bracing zones.
+
+Mike raised a concern about the soil report — the geotech found unexpected clay layers at 15 feet that could affect the deep foundation design. He's requesting an updated boring log from the geotech contractor by March 22 and will revise the foundation plan once that data is in. He estimated a 2-week delay on structural calcs if the soil conditions require caissons instead of spread footings.
+
+Priya noted that the mechanical room on Level B1 is undersized for the current HVAC load. She's running an updated load calc and will share options for either expanding the room or splitting equipment across two floors. She needs David to confirm ceiling heights on B1 and B2 by end of week.
+
+David presented three facade options to Lisa, who preferred the terra cotta rain screen but flagged budget concerns. David will prepare a cost comparison of all three options and send to Lisa by March 25.
+
+Lisa confirmed the client wants LEED Gold certification. She asked the team to track sustainability credits from the start rather than retrofitting later. Sarah will set up a shared LEED scorecard in the project portal.
+
+Action items:
+- Mike: Get updated boring logs from geotech by March 22
+- Mike: Revise foundation plan pending soil data
+- Priya: Run updated HVAC load calc and share options by March 20
+- David: Confirm B1/B2 ceiling heights for Priya by March 18
+- David: Prepare facade cost comparison for Lisa by March 25
+- Sarah: Set up LEED scorecard in project portal by March 17
+- All: Flag any coordination conflicts in the parking garage zone to Sarah ASAP
