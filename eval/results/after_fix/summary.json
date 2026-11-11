@@ -1,0 +1,247 @@
+{
+  "anthropic:claude-haiku-5-5": {
+    "n_documents": 24,
+    "api_errors": 0,
+    "raw_json_ok": 22,
+    "parsed_ok": 22,
+    "schema_ok": 22,
+    "consistent": 22,
+    "by_mode_schema_ok": {
+      "summarize": [
+        4,
+        6
+      ],
+      "entities": [
+        6,
+        6
+      ],
+      "actions": [
+        6,
+        6
+      ],
+      "classify": [
+        6,
+        6
+      ]
+    },
+    "latency_s": {
+      "n": 24,
+      "mean": 2.257,
+      "median": 2.33,
+      "min": 0.774,
+      "max": 3.816
+    },
+    "entities": {
+      "documents_scored": 6,
+      "gold_entities": 38,
+      "tp": 38,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "name_only_recall": 1.0
+    },
+    "actions": {
+      "documents_scored": 6,
+      "gold_actions": 18,
+      "tp": 18,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "owner_accuracy": 1.0,
+      "deadline_accuracy": 0.9444444444444444,
+      "priority_scored": 7,
+      "priority_accuracy": 1.0,
+      "all_fields_correct": 17,
+      "exact_action_rate": 0.9444444444444444
+    },
+    "classify": {
+      "documents_scored": 6,
+      "primary_correct": 6,
+      "primary_accuracy": 1.0,
+      "language_correct": 6,
+      "language_accuracy": 1.0,
+      "label_tp": 6,
+      "label_fp": 4,
+      "label_fn": 0,
+      "precision": 0.6,
+      "recall": 1.0,
+      "f1": 0.7499999999999999,
+      "confident": {
+        "label_tp": 6,
+        "label_fp": 0,
+        "label_fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "failures": [
+      {
+        "id": "actions_03",
+        "problems": [
+          "field: Draft the methods section: deadline 'before the 1 July 2025 group review', expected '2025-07-01'"
+        ]
+      },
+      {
+        "id": "classify_01",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "classify_04",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "classify_05",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "classify_06",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "summarize_02",
+        "problems": [
+          "parse failed: LLM returned invalid JSON."
+        ]
+      },
+      {
+        "id": "summarize_04",
+        "problems": [
+          "parse failed: LLM returned invalid JSON."
+        ]
+      }
+    ]
+  },
+  "anthropic:claude-sonnet-5-5": {
+    "n_documents": 24,
+    "api_errors": 0,
+    "raw_json_ok": 22,
+    "parsed_ok": 22,
+    "schema_ok": 22,
+    "consistent": 22,
+    "by_mode_schema_ok": {
+      "summarize": [
+        4,
+        6
+      ],
+      "entities": [
+        6,
+        6
+      ],
+      "actions": [
+        6,
+        6
+      ],
+      "classify": [
+        6,
+        6
+      ]
+    },
+    "latency_s": {
+      "n": 24,
+      "mean": 2.6061666666666667,
+      "median": 2.048,
+      "min": 1.124,
+      "max": 6.144
+    },
+    "entities": {
+      "documents_scored": 6,
+      "gold_entities": 38,
+      "tp": 38,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "name_only_recall": 1.0
+    },
+    "actions": {
+      "documents_scored": 6,
+      "gold_actions": 18,
+      "tp": 18,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "owner_accuracy": 1.0,
+      "deadline_accuracy": 1.0,
+      "priority_scored": 7,
+      "priority_accuracy": 1.0,
+      "all_fields_correct": 18,
+      "exact_action_rate": 1.0
+    },
+    "classify": {
+      "documents_scored": 6,
+      "primary_correct": 6,
+      "primary_accuracy": 1.0,
+      "language_correct": 6,
+      "language_accuracy": 1.0,
+      "label_tp": 6,
+      "label_fp": 5,
+      "label_fn": 0,
+      "precision": 0.5454545454545454,
+      "recall": 1.0,
+      "f1": 0.7058823529411764,
+      "confident": {
+        "label_tp": 6,
+        "label_fp": 0,
+        "label_fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "failures": [
+      {
+        "id": "classify_01",
+        "problems": [
+          "extra label (any confidence): operations",
+          "extra label (any confidence): research"
+        ]
+      },
+      {
+        "id": "classify_03",
+        "problems": [
+          "extra label (any confidence): general"
+        ]
+      },
+      {
+        "id": "classify_04",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "classify_06",
+        "problems": [
+          "extra label (any confidence): operations"
+        ]
+      },
+      {
+        "id": "summarize_02",
+        "problems": [
+          "parse failed: LLM returned invalid JSON."
+        ]
+      },
+      {
+        "id": "summarize_04",
+        "problems": [
+          "parse failed: LLM returned invalid JSON."
+        ]
+      }
+    ]
+  }
+}
