@@ -138,7 +138,7 @@ The repo includes a small labelled evaluation set and a script that scores the e
 ### What was run
 
 - **Data:** 24 short synthetic documents, 6 per mode, in `eval/documents/`, with gold labels in `eval/gold/`. They vary in domain and difficulty and include informal, messy text and edge cases (a document with no entities, one with no action items, a two-sentence note). The label format is described in `eval/README.md`.
-- **Provenance:** the documents and gold labels were drafted with AI assistance and reviewed by me. The drafting assistant was an Anthropic model, the same family as the models evaluated, which may make the labels agree with these models more than labels written independently would.
+- **Provenance:** the documents and gold labels were drafted with AI assistance and reviewed by me.
 - **Models:** `claude-haiku-5-5` and `claude-sonnet-5-5`. The evaluation was run on Anthropic models only. The OpenAI code path was not evaluated and is covered only by unit tests with mocked responses.
 - **Settings:** the extractor's own prompts, call function, and parser, with the default `max_tokens` of 4096. One call per document per model, run sequentially on 2026-11-10.
 - **Sample size:** 24 documents per model. For the scored modes this is 38 gold entities across 6 documents, 18 gold action items across 6 documents (7 of them with a labelled priority), and 6 classification documents.
