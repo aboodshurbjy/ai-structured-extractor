@@ -35,7 +35,24 @@ def _call_anthropic(model: str, system: str, user: str, max_tokens: int) -> str:
         system=system,
         messages=[{"role": "user", "content": user}],
     )
-    return response.content[0].text
+    return _text_from_anthropic_response(response)
+
+
+def _text_from_anthropic_response(response) -> str:
+    """Join the text blocks of an Anthropic response.
+
+    The content list can start with non-text blocks (current models return a
+    thinking block first), so the text is not always at index 0.
+    """
+    text = "".join(
+        block.text for block in response.content if getattr(block, "type", None) == "text"
+    )
+    if not text:
+        raise ParseError(
+            "Anthropic response contained no text "
+            f"(stop_reason: {getattr(response, 'stop_reason', None)})."
+        )
+    return text
 
 
 def _call_openai(model: str, system: str, user: str, max_tokens: int) -> str:

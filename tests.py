@@ -12,8 +12,10 @@ Run:  pytest tests.py -v
 
 import json
 import pytest
+from types import SimpleNamespace
 from unittest.mock import patch, MagicMock
 from extractor import (
+    _text_from_anthropic_response,
     parse_response,
     ParseError,
     extract,
@@ -210,3 +212,39 @@ class TestExtractE2E:
         json_str = result.to_json()
         reparsed = json.loads(json_str)
         assert reparsed["title"] == "Project Kickoff"
+
+
+# -- Anthropic response handling ----------------------------------------------
+
+class TestAnthropicResponseText:
+    """The text must be read from text blocks, wherever they are in the list."""
+
+    @staticmethod
+    def _response(*blocks, stop_reason="end_turn"):
+        return SimpleNamespace(content=list(blocks), stop_reason=stop_reason)
+
+    def test_text_only_response(self):
+        response = self._response(SimpleNamespace(type="text", text='{"a": 1}'))
+        assert _text_from_anthropic_response(response) == '{"a": 1}'
+
+    def test_thinking_block_before_text_is_skipped(self):
+        """Regression: content[0] can be a thinking block with no .text attribute."""
+        response = self._response(
+            SimpleNamespace(type="thinking", thinking=""),
+            SimpleNamespace(type="text", text='{"a": 1}'),
+        )
+        assert _text_from_anthropic_response(response) == '{"a": 1}'
+
+    def test_multiple_text_blocks_are_joined(self):
+        response = self._response(
+            SimpleNamespace(type="text", text='{"a": '),
+            SimpleNamespace(type="text", text="1}"),
+        )
+        assert _text_from_anthropic_response(response) == '{"a": 1}'
+
+    def test_no_text_block_raises_parse_error(self):
+        response = self._response(
+            SimpleNamespace(type="thinking", thinking=""), stop_reason="max_tokens"
+        )
+        with pytest.raises(ParseError, match="max_tokens"):
+            _text_from_anthropic_response(response)
