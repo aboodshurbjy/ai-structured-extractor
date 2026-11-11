@@ -1,0 +1,16 @@
+{
+  "id": "summarize_06",
+  "mode": "summarize",
+  "difficulty": "edge case",
+  "domain": "short note",
+  "notes": "Nine words. Tests whether the model pads or invents content when there is almost nothing to summarize.",
+  "expected": {
+    "title": "Lunch moved to 1 pm",
+    "summary": "Lunch is moved to 1 pm tomorrow in the same room.",
+    "key_points": [
+      "Lunch moved to 1 pm tomorrow",
+      "Same room"
+    ],
+    "sentiment": "neutral"
+  }
+}

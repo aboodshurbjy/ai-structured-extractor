@@ -1,0 +1,94 @@
+{
+  "id": "entities_03",
+  "mode": "entities",
+  "difficulty": "medium",
+  "domain": "legal",
+  "notes": "Contract language with defined terms that are roles, not names.",
+  "expected": {
+    "entities": [
+      {
+        "name": "January 15, 2026",
+        "type": "DATE",
+        "aliases": [
+          "2026-01-15",
+          "15 January 2026"
+        ]
+      },
+      {
+        "name": "Calloway Industrial Supply LLC",
+        "type": "ORG",
+        "aliases": [
+          "Calloway Industrial Supply"
+        ]
+      },
+      {
+        "name": "Tri-County Water Authority",
+        "type": "ORG",
+        "aliases": [
+          "the Tri-County Water Authority"
+        ]
+      },
+      {
+        "name": "$18,500",
+        "type": "MONEY",
+        "aliases": [
+          "$18,500 per month",
+          "18,500"
+        ]
+      },
+      {
+        "name": "Ohio",
+        "type": "LOCATION",
+        "aliases": [
+          "State of Ohio",
+          "the State of Ohio"
+        ]
+      },
+      {
+        "name": "Marcus Bell",
+        "type": "PERSON"
+      },
+      {
+        "name": "Yolanda Ruiz",
+        "type": "PERSON"
+      }
+    ],
+    "optional_entities": [
+      {
+        "name": "Supplier",
+        "type": "ORG",
+        "type_accept": [
+          "ORG",
+          "OTHER"
+        ]
+      },
+      {
+        "name": "Buyer",
+        "type": "ORG",
+        "type_accept": [
+          "ORG",
+          "OTHER"
+        ]
+      },
+      {
+        "name": "24 months",
+        "type": "DATE",
+        "type_accept": [
+          "DATE",
+          "OTHER"
+        ]
+      },
+      {
+        "name": "Supply Agreement",
+        "type": "OTHER",
+        "aliases": [
+          "Agreement"
+        ]
+      },
+      {
+        "name": "Vice President",
+        "type": "OTHER"
+      }
+    ]
+  }
+}

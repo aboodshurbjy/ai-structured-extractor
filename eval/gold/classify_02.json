@@ -1,0 +1,22 @@
+{
+  "id": "classify_02",
+  "mode": "classify",
+  "difficulty": "easy",
+  "domain": "contract clause",
+  "notes": "Single clear category.",
+  "expected": {
+    "primary_category": "legal",
+    "required_categories": [
+      "legal"
+    ],
+    "optional_categories": [
+      "business",
+      "financial"
+    ],
+    "language": "English",
+    "language_accept": [
+      "english",
+      "en"
+    ]
+  }
+}

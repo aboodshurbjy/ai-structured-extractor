@@ -1,0 +1,7 @@
+Sprint planning notes, 4 February 2026
+Attendees: Hana Suzuki, Tomás Rivera, Ife Adeyemi
+
+Action items:
+1. Hana to write the migration script for the orders table by 9 February. High priority, it blocks the release.
+2. Tomás to update the API docs for the new pagination parameters by 13 February.
+3. Ife to schedule a load test with the infrastructure team. No date yet.

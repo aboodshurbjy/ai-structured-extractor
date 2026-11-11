@@ -1,0 +1,20 @@
+{
+  "id": "summarize_02",
+  "mode": "summarize",
+  "difficulty": "medium",
+  "domain": "software incident",
+  "notes": "Incident postmortem with times and counts.",
+  "expected": {
+    "title": "Checkout outage caused by expired TLS certificate",
+    "summary": "On 7 January the checkout service failed about 30% of requests for roughly two and a half hours because a TLS certificate on the payments gateway had expired. About 1,900 orders failed. The certificate and the renewal job have been fixed and expiry monitoring will be added.",
+    "key_points": [
+      "Errors on about 30% of checkout requests, 14:10 to 16:45 UTC on 7 January",
+      "Cause: expired TLS certificate on the internal payments gateway",
+      "Renewal job had been failing silently since December",
+      "About 1,900 orders failed; customers were not charged",
+      "Diagnosis took 95 minutes because the alert pointed at the wrong service",
+      "Certificate renewed, renewal job fixed, expiry monitoring to be added"
+    ],
+    "sentiment": "negative"
+  }
+}

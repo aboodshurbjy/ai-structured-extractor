@@ -1,0 +1,73 @@
+{
+  "id": "actions_03",
+  "mode": "actions",
+  "difficulty": "hard",
+  "domain": "research lab",
+  "notes": "Contains completed work, a decision, and a cancelled task that should NOT be extracted. Three open items are real actions.",
+  "expected": {
+    "actions": [
+      {
+        "task": "Rerun the flow cytometry controls",
+        "match_keywords": [
+          "flow cytometry"
+        ],
+        "owner": "Mei",
+        "owner_accept": [
+          "mei"
+        ],
+        "deadline": "2025-06-25",
+        "deadline_accept": [
+          "2025-06-25",
+          "25 june",
+          "june 25",
+          "25 june 2025",
+          "june 25, 2025"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Draft the methods section",
+        "match_keywords": [
+          "methods"
+        ],
+        "owner": "Priyanka",
+        "owner_accept": [
+          "priyanka"
+        ],
+        "deadline": "2025-07-01",
+        "deadline_accept": [
+          "2025-07-01",
+          "1 july",
+          "july 1",
+          "1 july 2025",
+          "july 1, 2025",
+          "before 1 july",
+          "before the 1 july group review",
+          "before 1 july group review"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Reconcile the freezer inventory",
+        "match_keywords": [
+          "freezer"
+        ],
+        "owner": "unassigned",
+        "owner_accept": [
+          "unassigned"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": null
+      }
+    ],
+    "not_actions": [
+      "antibody titration (already done)",
+      "ethics amendment (already done)",
+      "contact the supplier / reorder reagent lot (cancelled)",
+      "stay with the 96-well format (a decision, not a task)"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+After upgrading to version 3.8 the worker process crashes on startup with 'Segmentation fault (core dumped)'. The stack trace points to the native image decoder. Downgrading libjpeg to 2.1 fixes it. Steps to reproduce: start the worker with more than four threads and send any JPEG larger than 8 MB.

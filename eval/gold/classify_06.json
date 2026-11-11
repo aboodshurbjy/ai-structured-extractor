@@ -1,0 +1,23 @@
+{
+  "id": "classify_06",
+  "mode": "classify",
+  "difficulty": "hard",
+  "domain": "research abstract (Spanish)",
+  "notes": "Non-English input. Tests category choice and the language field.",
+  "expected": {
+    "primary_category": "research",
+    "required_categories": [
+      "research"
+    ],
+    "optional_categories": [
+      "technical"
+    ],
+    "language": "Spanish",
+    "language_accept": [
+      "spanish",
+      "es",
+      "español",
+      "espanol"
+    ]
+  }
+}

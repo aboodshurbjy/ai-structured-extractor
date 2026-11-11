@@ -1,0 +1,64 @@
+{
+  "id": "entities_04",
+  "mode": "entities",
+  "difficulty": "hard",
+  "domain": "personal narrative",
+  "notes": "Same strings used as person names and place names (Paris, Austin), and a company name that is also a common noun (Orchard, Apple).",
+  "expected": {
+    "entities": [
+      {
+        "name": "Paris Lindqvist",
+        "type": "PERSON"
+      },
+      {
+        "name": "Paris",
+        "type": "LOCATION"
+      },
+      {
+        "name": "Georgia",
+        "type": "LOCATION"
+      },
+      {
+        "name": "Orchard",
+        "type": "ORG"
+      },
+      {
+        "name": "Tbilisi",
+        "type": "LOCATION"
+      },
+      {
+        "name": "Apple",
+        "type": "ORG"
+      },
+      {
+        "name": "Austin",
+        "type": "PERSON"
+      },
+      {
+        "name": "Austin",
+        "type": "LOCATION",
+        "aliases": [
+          "Austin, Texas"
+        ]
+      }
+    ],
+    "optional_entities": [
+      {
+        "name": "Texas",
+        "type": "LOCATION"
+      },
+      {
+        "name": "US",
+        "type": "LOCATION",
+        "aliases": [
+          "United States",
+          "USA"
+        ]
+      },
+      {
+        "name": "last spring",
+        "type": "DATE"
+      }
+    ]
+  }
+}

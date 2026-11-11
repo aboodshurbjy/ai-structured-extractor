@@ -1,0 +1,20 @@
+{
+  "id": "summarize_04",
+  "mode": "summarize",
+  "difficulty": "hard",
+  "domain": "clinical research",
+  "notes": "Mixed news: efficacy endpoint met, safety signal found. Sentiment is debatable; neutral is the reference, positive or negative are both arguable.",
+  "expected": {
+    "title": "RX-118 phase 2 interim analysis",
+    "summary": "In a phase 2 trial of 212 adults with chronic migraine, RX-118 met its primary endpoint, cutting monthly migraine days by 3.9 versus 1.6 on placebo. Elevated liver enzymes occurred in 11% of treated patients versus 2% on placebo. The trial continues with added liver monitoring and the phase 3 decision is delayed to the fourth quarter.",
+    "key_points": [
+      "212 adults with chronic migraine",
+      "Monthly migraine days reduced by 3.9 versus 1.6 on placebo; primary endpoint met",
+      "Elevated liver enzymes in 11% on drug versus 2% on placebo",
+      "Four patients stopped treatment",
+      "Monitoring board: continue with added liver monitoring",
+      "Phase 3 decision delayed until full data in the fourth quarter"
+    ],
+    "sentiment": "neutral"
+  }
+}

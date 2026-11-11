@@ -1,0 +1,73 @@
+{
+  "id": "actions_02",
+  "mode": "actions",
+  "difficulty": "medium",
+  "domain": "event logistics",
+  "notes": "Actions are embedded in prose. One has no owner. The sender refers to himself as 'I'. Deadlines are weekday names with no date.",
+  "expected": {
+    "actions": [
+      {
+        "task": "Send the signed vendor contract back to the venue",
+        "match_keywords": [
+          "contract"
+        ],
+        "owner": "Bianca",
+        "owner_accept": [
+          "bianca"
+        ],
+        "deadline": "Friday",
+        "deadline_accept": [
+          "friday",
+          "by friday"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Book the freight pickup",
+        "match_keywords": [
+          "freight"
+        ],
+        "owner": "Omar",
+        "owner_accept": [
+          "omar"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Send the final crate dimensions to Omar",
+        "match_keywords": [
+          "dimensions"
+        ],
+        "owner": "Chen",
+        "owner_accept": [
+          "chen"
+        ],
+        "deadline": "Wednesday",
+        "deadline_accept": [
+          "wednesday",
+          "by wednesday"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Order the new banner stands",
+        "match_keywords": [
+          "banner"
+        ],
+        "owner": "unassigned",
+        "owner_accept": [
+          "unassigned"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": "low"
+      }
+    ]
+  }
+}

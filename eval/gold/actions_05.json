@@ -1,0 +1,10 @@
+{
+  "id": "actions_05",
+  "mode": "actions",
+  "difficulty": "edge case",
+  "domain": "building notice",
+  "notes": "Status update with no action items. The text says so explicitly. The correct output is an empty list.",
+  "expected": {
+    "actions": []
+  }
+}

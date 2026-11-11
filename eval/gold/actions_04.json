@@ -1,0 +1,82 @@
+{
+  "id": "actions_04",
+  "mode": "actions",
+  "difficulty": "messy",
+  "domain": "restaurant chat",
+  "notes": "Chat log with timestamps, typos, slang, and an emoji. Owners are implied by who is speaking. Deadlines are relative.",
+  "expected": {
+    "actions": [
+      {
+        "task": "Call the refrigeration technician about the walk-in cooler",
+        "match_keywords": [
+          "refrigeration"
+        ],
+        "owner": "Marcus",
+        "owner_accept": [
+          "marcus"
+        ],
+        "deadline": "today",
+        "deadline_accept": [
+          "today"
+        ],
+        "priority": "high"
+      },
+      {
+        "task": "Send the weekend produce order",
+        "match_keywords": [
+          "produce"
+        ],
+        "owner": "Luis",
+        "owner_accept": [
+          "luis"
+        ],
+        "deadline": "3pm",
+        "deadline_accept": [
+          "3pm",
+          "3 pm",
+          "by 3pm",
+          "by 3 pm",
+          "today 3pm",
+          "today by 3pm",
+          "today at 3pm",
+          "3pm today",
+          "3:00 pm",
+          "15:00"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Fix the schedule (Saturday brunch is understaffed)",
+        "match_keywords": [
+          "schedule"
+        ],
+        "owner": "Dee",
+        "owner_accept": [
+          "dee"
+        ],
+        "deadline": "tomorrow morning",
+        "deadline_accept": [
+          "tomorrow morning",
+          "tmrw morning",
+          "tomorrow"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Print new allergen cards",
+        "match_keywords": [
+          "allergen"
+        ],
+        "owner": "Luis",
+        "owner_accept": [
+          "luis"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": "low"
+      }
+    ]
+  }
+}

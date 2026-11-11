@@ -1,0 +1,69 @@
+{
+  "id": "actions_01",
+  "mode": "actions",
+  "difficulty": "easy",
+  "domain": "software team",
+  "notes": "Numbered action list with explicit owners and dates.",
+  "expected": {
+    "actions": [
+      {
+        "task": "Write the migration script for the orders table",
+        "match_keywords": [
+          "migration"
+        ],
+        "owner": "Hana Suzuki",
+        "owner_accept": [
+          "hana",
+          "hana suzuki"
+        ],
+        "deadline": "2026-02-09",
+        "deadline_accept": [
+          "2026-02-09",
+          "9 february",
+          "february 9",
+          "9 february 2026",
+          "february 9, 2026"
+        ],
+        "priority": "high"
+      },
+      {
+        "task": "Update the API docs for the new pagination parameters",
+        "match_keywords": [
+          "api doc"
+        ],
+        "owner": "Tomás Rivera",
+        "owner_accept": [
+          "tomás",
+          "tomas",
+          "tomás rivera",
+          "tomas rivera"
+        ],
+        "deadline": "2026-02-13",
+        "deadline_accept": [
+          "2026-02-13",
+          "13 february",
+          "february 13",
+          "13 february 2026",
+          "february 13, 2026"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Schedule a load test with the infrastructure team",
+        "match_keywords": [
+          "load test"
+        ],
+        "owner": "Ife Adeyemi",
+        "owner_accept": [
+          "ife",
+          "ife adeyemi"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": null
+      }
+    ]
+  }
+}

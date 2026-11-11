@@ -1,0 +1,56 @@
+{
+  "id": "entities_05",
+  "mode": "entities",
+  "difficulty": "messy",
+  "domain": "chat message",
+  "notes": "All lowercase, abbreviations, no sentence structure. Names must be recovered without capitalization cues.",
+  "expected": {
+    "entities": [
+      {
+        "name": "Sam Oyelaran",
+        "type": "PERSON"
+      },
+      {
+        "name": "Brightline",
+        "type": "ORG"
+      },
+      {
+        "name": "2,400 USD",
+        "type": "MONEY",
+        "aliases": [
+          "$2,400",
+          "2400 USD",
+          "2,400"
+        ]
+      },
+      {
+        "name": "30 June",
+        "type": "DATE",
+        "aliases": [
+          "June 30"
+        ]
+      },
+      {
+        "name": "Acme GmbH",
+        "type": "ORG"
+      },
+      {
+        "name": "Berlin",
+        "type": "LOCATION",
+        "aliases": [
+          "Berlin office"
+        ]
+      },
+      {
+        "name": "Fatima",
+        "type": "PERSON"
+      }
+    ],
+    "optional_entities": [
+      {
+        "name": "April",
+        "type": "DATE"
+      }
+    ]
+  }
+}

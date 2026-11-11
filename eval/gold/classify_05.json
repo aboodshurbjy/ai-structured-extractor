@@ -1,0 +1,23 @@
+{
+  "id": "classify_05",
+  "mode": "classify",
+  "difficulty": "messy",
+  "domain": "campaign brief",
+  "notes": "Draft notes with abbreviations and symbols. Marketing is primary. The budget lines and the legal note are distractors that make financial, business, and legal acceptable secondary labels.",
+  "expected": {
+    "primary_category": "marketing",
+    "required_categories": [
+      "marketing"
+    ],
+    "optional_categories": [
+      "financial",
+      "business",
+      "legal"
+    ],
+    "language": "English",
+    "language_accept": [
+      "english",
+      "en"
+    ]
+  }
+}

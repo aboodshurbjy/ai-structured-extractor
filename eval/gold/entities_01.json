@@ -1,0 +1,61 @@
+{
+  "id": "entities_01",
+  "mode": "entities",
+  "difficulty": "easy",
+  "domain": "business news",
+  "notes": "Clean news sentence with one entity of most types.",
+  "expected": {
+    "entities": [
+      {
+        "name": "March 3, 2025",
+        "type": "DATE",
+        "aliases": [
+          "2025-03-03",
+          "March 3",
+          "3 March 2025"
+        ]
+      },
+      {
+        "name": "Northwind Logistics",
+        "type": "ORG"
+      },
+      {
+        "name": "Harbor Freightways",
+        "type": "ORG"
+      },
+      {
+        "name": "$42 million",
+        "type": "MONEY",
+        "aliases": [
+          "42 million",
+          "$42M",
+          "$42,000,000"
+        ]
+      },
+      {
+        "name": "Dana Whitfield",
+        "type": "PERSON"
+      },
+      {
+        "name": "Rotterdam",
+        "type": "LOCATION"
+      },
+      {
+        "name": "RouteIQ",
+        "type": "PRODUCT",
+        "aliases": [
+          "RouteIQ software"
+        ]
+      }
+    ],
+    "optional_entities": [
+      {
+        "name": "end of the year",
+        "type": "DATE",
+        "aliases": [
+          "the end of the year"
+        ]
+      }
+    ]
+  }
+}

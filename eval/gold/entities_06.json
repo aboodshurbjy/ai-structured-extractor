@@ -1,0 +1,16 @@
+{
+  "id": "entities_06",
+  "mode": "entities",
+  "difficulty": "edge case",
+  "domain": "household note",
+  "notes": "Contains no named entities. The correct output is an empty list. Any entity returned other than the optional one counts as a false positive.",
+  "expected": {
+    "entities": [],
+    "optional_entities": [
+      {
+        "name": "tonight",
+        "type": "DATE"
+      }
+    ]
+  }
+}

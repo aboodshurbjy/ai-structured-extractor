@@ -1,0 +1,20 @@
+{
+  "id": "summarize_05",
+  "mode": "summarize",
+  "difficulty": "messy",
+  "domain": "logistics",
+  "notes": "Informal chat message with abbreviations, lowercase, and run-on sentences.",
+  "expected": {
+    "title": "Hamburg shipment held at customs",
+    "summary": "The Hamburg shipment is held at customs because of wrong HS codes on about half the line items, which was an internal error. Storage fees are about EUR 180 per day and clearance will take at least 5 to 7 business days after Jonas refiles today. The retailer launch on the 19th will be missed and sales needs to inform the retailer.",
+    "key_points": [
+      "Customs flagged the paperwork on Tuesday",
+      "Wrong HS code on about half the line items; internal error, not the broker's",
+      "Storage fees about EUR 180 per day",
+      "Jonas is refiling today; customs says at least 5 to 7 business days",
+      "Retailer launch on the 19th will not happen",
+      "Sales needs to tell the retailer"
+    ],
+    "sentiment": "negative"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "id": "entities_02",
+  "mode": "entities",
+  "difficulty": "medium",
+  "domain": "medical",
+  "notes": "Titles on names, a drug name with a dose, and two dates.",
+  "expected": {
+    "entities": [
+      {
+        "name": "Amara Okafor",
+        "type": "PERSON",
+        "aliases": [
+          "Dr. Amara Okafor",
+          "Dr Amara Okafor"
+        ]
+      },
+      {
+        "name": "St. Brigid Hospital",
+        "type": "ORG",
+        "aliases": [
+          "St Brigid Hospital",
+          "St. Brigid Hospital, Leeds"
+        ],
+        "type_accept": [
+          "ORG",
+          "LOCATION"
+        ]
+      },
+      {
+        "name": "Leeds",
+        "type": "LOCATION"
+      },
+      {
+        "name": "Leon Fischer",
+        "type": "PERSON",
+        "aliases": [
+          "Mr. Leon Fischer",
+          "Mr Leon Fischer"
+        ]
+      },
+      {
+        "name": "12 May 2025",
+        "type": "DATE",
+        "aliases": [
+          "May 12, 2025",
+          "2025-05-12"
+        ]
+      },
+      {
+        "name": "Jardiance",
+        "type": "PRODUCT",
+        "aliases": [
+          "Jardiance 10 mg",
+          "Jardiance 10 mg daily"
+        ],
+        "type_accept": [
+          "PRODUCT",
+          "OTHER"
+        ]
+      },
+      {
+        "name": "Northgate Diabetes Centre",
+        "type": "ORG",
+        "type_accept": [
+          "ORG",
+          "LOCATION"
+        ]
+      },
+      {
+        "name": "23 June 2025",
+        "type": "DATE",
+        "aliases": [
+          "June 23, 2025",
+          "2025-06-23"
+        ]
+      },
+      {
+        "name": "Helen Marsh",
+        "type": "PERSON",
+        "aliases": [
+          "Nurse Practitioner Helen Marsh"
+        ]
+      }
+    ],
+    "optional_entities": [
+      {
+        "name": "type 2 diabetes",
+        "type": "OTHER",
+        "aliases": [
+          "poorly controlled type 2 diabetes"
+        ]
+      }
+    ]
+  }
+}

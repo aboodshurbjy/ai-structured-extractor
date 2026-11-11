@@ -1,0 +1,22 @@
+{
+  "id": "classify_03",
+  "mode": "classify",
+  "difficulty": "hard",
+  "domain": "warehouse memo",
+  "notes": "Operations is primary, but shift changes and rosters make hr a defensible secondary label.",
+  "expected": {
+    "primary_category": "operations",
+    "required_categories": [
+      "operations"
+    ],
+    "optional_categories": [
+      "hr",
+      "business"
+    ],
+    "language": "English",
+    "language_accept": [
+      "english",
+      "en"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "summarize_01",
+  "mode": "summarize",
+  "difficulty": "easy",
+  "domain": "business",
+  "notes": "Clean quarterly update email.",
+  "expected": {
+    "title": "Q3 results",
+    "summary": "Q3 revenue was $4.2M, up 18% from Q2, and churn fell from 3.1% to 2.4%. The mobile app launched on schedule and four engineers were hired. Support response time missed its target and two support agents will be added in October.",
+    "key_points": [
+      "Revenue $4.2M, up 18% from Q2",
+      "Churn fell from 3.1% to 2.4%",
+      "Mobile app launched September 12",
+      "Four engineers hired",
+      "Support response time 9 hours against a 6 hour target",
+      "Two support agents to be added in October"
+    ],
+    "sentiment": "positive"
+  }
+}

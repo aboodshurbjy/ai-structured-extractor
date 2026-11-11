@@ -1,0 +1,19 @@
+{
+  "id": "classify_01",
+  "mode": "classify",
+  "difficulty": "easy",
+  "domain": "bug report",
+  "notes": "Single clear category.",
+  "expected": {
+    "primary_category": "technical",
+    "required_categories": [
+      "technical"
+    ],
+    "optional_categories": [],
+    "language": "English",
+    "language_accept": [
+      "english",
+      "en"
+    ]
+  }
+}

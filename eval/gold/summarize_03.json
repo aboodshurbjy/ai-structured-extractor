@@ -1,0 +1,20 @@
+{
+  "id": "summarize_03",
+  "mode": "summarize",
+  "difficulty": "medium",
+  "domain": "public notice",
+  "notes": "Neutral factual notice with dates and logistics.",
+  "expected": {
+    "title": "Alder Avenue closure for water main replacement",
+    "summary": "Alder Avenue will be closed between 5th Street and 9th Street from 2 June to 20 June for water main replacement. Traffic will be detoured via Birch Road and bus route 14 will skip three stops. Residents keep driveway access outside work hours.",
+    "key_points": [
+      "Closure between 5th Street and 9th Street, 2 June to 20 June",
+      "Reason: water main replacement",
+      "Work hours 7 a.m. to 5 p.m. on weekdays",
+      "Detour via Birch Road",
+      "Bus route 14 skips three stops",
+      "Driveway access outside work hours"
+    ],
+    "sentiment": "neutral"
+  }
+}

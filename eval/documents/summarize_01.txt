@@ -1,0 +1,3 @@
+Subject: Q3 results
+
+Team, Q3 revenue came in at $4.2M, up 18% from Q2, driven mostly by the two enterprise renewals that closed in August. Churn fell from 3.1% to 2.4%. We hired four engineers and the mobile app launched on schedule on September 12. The one miss was support response time, which rose to 9 hours against a 6 hour target; we are adding two support agents in October. Overall a strong quarter.

@@ -1,0 +1,21 @@
+{
+  "id": "classify_04",
+  "mode": "classify",
+  "difficulty": "medium",
+  "domain": "annual results",
+  "notes": "Financial is primary; business is a defensible secondary label.",
+  "expected": {
+    "primary_category": "financial",
+    "required_categories": [
+      "financial"
+    ],
+    "optional_categories": [
+      "business"
+    ],
+    "language": "English",
+    "language_accept": [
+      "english",
+      "en"
+    ]
+  }
+}

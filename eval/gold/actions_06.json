@@ -1,0 +1,91 @@
+{
+  "id": "actions_06",
+  "mode": "actions",
+  "difficulty": "medium",
+  "domain": "construction",
+  "notes": "Punch list with explicit priority words, a company as owner, and one deadline stated as an event date.",
+  "expected": {
+    "actions": [
+      {
+        "task": "Repair the exit sign at stair 2",
+        "match_keywords": [
+          "exit sign"
+        ],
+        "owner": "Delgado Electric",
+        "owner_accept": [
+          "delgado electric",
+          "electrical sub",
+          "electrical sub (delgado electric)",
+          "delgado electric (electrical sub)",
+          "electrical subcontractor (delgado electric)"
+        ],
+        "deadline": "2025-11-14",
+        "deadline_accept": [
+          "2025-11-14",
+          "14 november",
+          "november 14",
+          "14 november 2025",
+          "november 14, 2025",
+          "before 14 november",
+          "before the fire marshal inspection on 14 november"
+        ],
+        "priority": "high"
+      },
+      {
+        "task": "Paint touch-up in exam rooms 3 and 4",
+        "match_keywords": [
+          "paint"
+        ],
+        "owner": "Nadia Haddad",
+        "owner_accept": [
+          "nadia",
+          "nadia haddad"
+        ],
+        "deadline": "2025-11-21",
+        "deadline_accept": [
+          "2025-11-21",
+          "21 november",
+          "november 21",
+          "21 november 2025",
+          "november 21, 2025"
+        ],
+        "priority": "low"
+      },
+      {
+        "task": "Confirm the delivery date for the pharmacy door hardware with the supplier",
+        "match_keywords": [
+          "hardware"
+        ],
+        "owner": "Greg Olsen",
+        "owner_accept": [
+          "greg",
+          "greg olsen"
+        ],
+        "deadline": "2025-11-17",
+        "deadline_accept": [
+          "2025-11-17",
+          "17 november",
+          "november 17",
+          "17 november 2025",
+          "november 17, 2025"
+        ],
+        "priority": null
+      },
+      {
+        "task": "Replace or clean the stained ceiling tiles in corridor B",
+        "match_keywords": [
+          "ceiling"
+        ],
+        "owner": "unassigned",
+        "owner_accept": [
+          "unassigned"
+        ],
+        "deadline": "none",
+        "deadline_accept": [
+          "none"
+        ],
+        "priority": "medium"
+      }
+    ]
+  }
+}
