@@ -1,0 +1,321 @@
+{
+  "anthropic:claude-haiku-5-5": {
+    "n_documents": 24,
+    "api_errors": 17,
+    "raw_json_ok": 7,
+    "parsed_ok": 7,
+    "schema_ok": 7,
+    "consistent": 7,
+    "by_mode_schema_ok": {
+      "summarize": [
+        0,
+        6
+      ],
+      "entities": [
+        0,
+        6
+      ],
+      "actions": [
+        2,
+        6
+      ],
+      "classify": [
+        5,
+        6
+      ]
+    },
+    "latency_s": {
+      "n": 7,
+      "mean": 0.9495714285714285,
+      "median": 0.869,
+      "min": 0.848,
+      "max": 1.442
+    },
+    "entities": {
+      "documents_scored": 0,
+      "gold_entities": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "name_only_recall": null
+    },
+    "actions": {
+      "documents_scored": 2,
+      "gold_actions": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "owner_accuracy": 1.0,
+      "deadline_accuracy": 1.0,
+      "priority_scored": 3,
+      "priority_accuracy": 1.0,
+      "all_fields_correct": 4,
+      "exact_action_rate": 1.0
+    },
+    "classify": {
+      "documents_scored": 5,
+      "primary_correct": 5,
+      "primary_accuracy": 1.0,
+      "language_correct": 5,
+      "language_accuracy": 1.0,
+      "label_tp": 5,
+      "label_fp": 2,
+      "label_fn": 0,
+      "precision": 0.7142857142857143,
+      "recall": 1.0,
+      "f1": 0.8333333333333333
+    },
+    "failures": [
+      {
+        "id": "actions_01",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "actions_02",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "actions_03",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "actions_04",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "classify_01",
+        "problems": [
+          "extra label: operations"
+        ]
+      },
+      {
+        "id": "classify_04",
+        "problems": [
+          "extra label: operations"
+        ]
+      },
+      {
+        "id": "classify_06",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_01",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_02",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_03",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_04",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_05",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "entities_06",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_01",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_02",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_03",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_04",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_05",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_06",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      }
+    ]
+  },
+  "anthropic:claude-sonnet-5-5": {
+    "n_documents": 24,
+    "api_errors": 5,
+    "raw_json_ok": 19,
+    "parsed_ok": 19,
+    "schema_ok": 19,
+    "consistent": 19,
+    "by_mode_schema_ok": {
+      "summarize": [
+        1,
+        6
+      ],
+      "entities": [
+        6,
+        6
+      ],
+      "actions": [
+        6,
+        6
+      ],
+      "classify": [
+        6,
+        6
+      ]
+    },
+    "latency_s": {
+      "n": 19,
+      "mean": 1.7958947368421052,
+      "median": 1.677,
+      "min": 1.054,
+      "max": 2.892
+    },
+    "entities": {
+      "documents_scored": 6,
+      "gold_entities": 38,
+      "tp": 38,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "name_only_recall": 1.0
+    },
+    "actions": {
+      "documents_scored": 6,
+      "gold_actions": 18,
+      "tp": 18,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "owner_accuracy": 1.0,
+      "deadline_accuracy": 1.0,
+      "priority_scored": 7,
+      "priority_accuracy": 1.0,
+      "all_fields_correct": 18,
+      "exact_action_rate": 1.0
+    },
+    "classify": {
+      "documents_scored": 6,
+      "primary_correct": 6,
+      "primary_accuracy": 1.0,
+      "language_correct": 6,
+      "language_accuracy": 1.0,
+      "label_tp": 6,
+      "label_fp": 5,
+      "label_fn": 0,
+      "precision": 0.5454545454545454,
+      "recall": 1.0,
+      "f1": 0.7058823529411764
+    },
+    "failures": [
+      {
+        "id": "classify_01",
+        "problems": [
+          "extra label: operations",
+          "extra label: research"
+        ]
+      },
+      {
+        "id": "classify_03",
+        "problems": [
+          "extra label: general"
+        ]
+      },
+      {
+        "id": "classify_04",
+        "problems": [
+          "extra label: operations"
+        ]
+      },
+      {
+        "id": "classify_06",
+        "problems": [
+          "extra label: operations"
+        ]
+      },
+      {
+        "id": "summarize_01",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_02",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_03",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_04",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      },
+      {
+        "id": "summarize_05",
+        "problems": [
+          "call failed: AttributeError: 'ThinkingBlock' object has no attribute 'text'"
+        ]
+      }
+    ]
+  }
+}
