@@ -1,21 +1,19 @@
 # AI Structured Extractor
 
-A lightweight Python pipeline that takes unstructured text, routes it through an LLM with engineered prompts, and returns validated structured JSON output.
-
-Built as a clean demonstration of **API integration**, **prompt engineering**, and **structured output parsing** — the core building blocks behind any production LLM application.
+A small Python pipeline that sends unstructured text to an LLM with a mode-specific prompt and returns parsed, checked JSON. It supports Anthropic and OpenAI models behind one interface, and it comes with a labelled evaluation set and a script that scores the output.
 
 ## What It Does
 
-Feed it any text — meeting notes, technical documents, emails, project briefs — and choose an extraction mode:
+Give it text (meeting notes, emails, technical documents) and choose a mode:
 
 | Mode | Output |
 |------|--------|
-| `summarize` | Executive summary, key points, sentiment |
-| `entities` | Named entities with types (person, org, location, date, etc.) and source context |
+| `summarize` | Title, summary, key points, sentiment |
+| `entities` | Named entities with a type (person, org, location, date, money, product, other) and source context |
 | `actions` | Action items with owner, deadline, and priority |
-| `classify` | Multi-label classification with confidence scores |
+| `classify` | Category labels with confidence scores, a primary category, and the language |
 
-The pipeline handles prompt construction, API calls, response parsing, schema validation, and error recovery.
+The pipeline builds the prompt, calls the provider, parses the response, checks that the required keys are present, and raises a descriptive error when something is wrong.
 
 ## Architecture
 
@@ -33,22 +31,21 @@ The pipeline handles prompt construction, API calls, response parsing, schema va
                                                                     └────────────┘
 ```
 
-**Key design decisions:**
+Design decisions:
 
-- **Provider abstraction** — Anthropic and OpenAI share one interface, so swapping models is a flag change
-- **Prompt templates with explicit schemas** — Each mode defines the exact JSON shape the LLM must return, reducing hallucinated structure
-- **Defensive parsing** — Strips markdown fences, validates required keys, and surfaces clear errors when the LLM deviates
-- **Dataclass result container** — `ExtractionResult` holds both parsed data and the raw response for debugging
+- **Provider abstraction.** Anthropic and OpenAI share one call signature, `(model, system, user, max_tokens) -> str`, so switching provider is a command-line flag.
+- **Explicit schema in the prompt.** Each mode's template spells out the JSON shape the model must return.
+- **Defensive parsing.** The parser strips markdown code fences, checks required keys, and reports truncated responses separately from malformed ones.
+- **Result container.** `ExtractionResult` holds the parsed data and the raw response for debugging.
 
 ## Quick Start
 
 ```bash
-# Clone and install
 git clone https://github.com/aboodshurbjy/ai-structured-extractor.git
 cd ai-structured-extractor
 pip install -r requirements.txt
 
-# Set your API key
+# Set an API key
 export ANTHROPIC_API_KEY="sk-ant-..."
 # or
 export OPENAI_API_KEY="sk-..."
@@ -60,11 +57,15 @@ python extractor.py actions examples/meeting_notes.txt --provider openai
 echo "Ship the v2 release by Friday. Assign to Jordan." | python extractor.py actions -
 ```
 
+Default models are `claude-sonnet-5-5` (Anthropic) and `gpt-4o-mini` (OpenAI). Use `--model` to override.
+
 ## Example Output
 
-**Input:** `examples/meeting_notes.txt` (AEC project kickoff notes)
+Input: `examples/meeting_notes.txt` (project kickoff notes)
 
-**Command:** `python extractor.py actions examples/meeting_notes.txt`
+Command: `python extractor.py actions examples/meeting_notes.txt`
+
+Output from `claude-sonnet-5-5` on 2026-11-10:
 
 ```json
 {
@@ -72,66 +73,238 @@ echo "Ship the v2 release by Friday. Assign to Jordan." | python extractor.py ac
     {
       "task": "Get updated boring logs from geotech contractor",
       "owner": "Mike Torres",
-      "deadline": "2026-03-22",
+      "deadline": "March 22, 2026",
       "priority": "high"
     },
     {
-      "task": "Run updated HVAC load calc and share options",
+      "task": "Revise foundation plan once updated soil data is received",
+      "owner": "Mike Torres",
+      "deadline": "none",
+      "priority": "high"
+    },
+    {
+      "task": "Run updated HVAC load calculation and share options for expanding the Level B1 mechanical room or splitting equipment across two floors",
       "owner": "Priya Patel",
-      "deadline": "2026-03-20",
+      "deadline": "March 20, 2026",
       "priority": "high"
     },
     {
-      "task": "Confirm B1/B2 ceiling heights for MEP coordination",
+      "task": "Confirm ceiling heights on B1 and B2 for Priya",
       "owner": "David Kim",
-      "deadline": "2026-03-18",
+      "deadline": "March 18, 2026",
+      "priority": "high"
+    },
+    {
+      "task": "Prepare cost comparison of all three facade options and send to Lisa",
+      "owner": "David Kim",
+      "deadline": "March 25, 2026",
       "priority": "medium"
     },
     {
-      "task": "Prepare facade cost comparison (3 options)",
-      "owner": "David Kim",
-      "deadline": "2026-03-25",
-      "priority": "medium"
-    },
-    {
-      "task": "Set up LEED scorecard in project portal",
+      "task": "Set up shared LEED scorecard in the project portal",
       "owner": "Sarah Chen",
-      "deadline": "2026-03-17",
+      "deadline": "March 17, 2026",
       "priority": "medium"
+    },
+    {
+      "task": "Flag any coordination conflicts in the parking garage zone (ventilation layout and seismic bracing overlap) to Sarah",
+      "owner": "All attendees",
+      "deadline": "ASAP",
+      "priority": "high"
+    },
+    {
+      "task": "Coordinate early on the parking garage ventilation layout, which overlaps with the seismic bracing zones",
+      "owner": "Mike Torres and Priya Patel",
+      "deadline": "none",
+      "priority": "high"
+    },
+    {
+      "task": "Complete construction documents to 90% for July permit submission",
+      "owner": "unassigned",
+      "deadline": "June 30, 2026",
+      "priority": "high"
     }
   ],
-  "action_count": 5
+  "action_count": 9
 }
 ```
 
-## Testing
+The notes end with an explicit list of 7 action items. The model returned 9: the 7 listed plus 2 it inferred from the prose above the list. Whether those 2 are wanted depends on the use case.
 
-Tests cover prompt rendering, JSON parsing, schema validation, and full end-to-end extraction with mocked API calls — no API key needed to run them.
+## Evaluation
+
+The repo includes a small labelled evaluation set and a script that scores the extractor against it.
+
+### What was run
+
+- **Data:** 24 short synthetic documents, 6 per mode, in `eval/documents/`, with gold labels in `eval/gold/`. They vary in domain and difficulty and include informal, messy text and edge cases (a document with no entities, one with no action items, a two-sentence note). The label format is described in `eval/README.md`.
+- **Provenance:** the documents and gold labels were drafted with AI assistance and reviewed by me. The drafting assistant was an Anthropic model, the same family as the models evaluated, which may make the labels agree with these models more than labels written independently would.
+- **Models:** `claude-haiku-5-5` and `claude-sonnet-5-5`. The evaluation was run on Anthropic models only. The OpenAI code path was not evaluated and is covered only by unit tests with mocked responses.
+- **Settings:** the extractor's own prompts, call function, and parser, with the default `max_tokens` of 4096. One call per document per model, run sequentially on 2026-11-10.
+- **Sample size:** 24 documents per model. For the scored modes this is 38 gold entities across 6 documents, 18 gold action items across 6 documents (7 of them with a labelled priority), and 6 classification documents.
+
+24 documents is a small sample. The results below show that the pipeline works on this set. They do not support claims about accuracy in general, and one more or one fewer error would move most of these percentages by several points.
+
+### Results
+
+Final run, raw outputs in `eval/results/final/`:
+
+| Metric | anthropic:claude-haiku-5-5 | anthropic:claude-sonnet-5-5 |
+|---|---|---|
+| Documents | 24 | 24 |
+| API call errors | 0 | 0 |
+| Raw response is valid JSON as returned | 24/24 (100.0%) | 24/24 (100.0%) |
+| Parsed by extractor (JSON + required keys) | 24/24 (100.0%) | 24/24 (100.0%) |
+| Valid JSON and passes schema validation | 24/24 (100.0%) | 24/24 (100.0%) |
+| ...and internally consistent | 24/24 (100.0%) | 24/24 (100.0%) |
+| Entities: precision | 100.0% | 100.0% |
+| Entities: recall | 100.0% | 100.0% |
+| Entities: F1 | 100.0% | 100.0% |
+| Entities: TP / FP / FN | 38 / 0 / 0 | 38 / 0 / 0 |
+| Entities: recall on name only | 100.0% | 100.0% |
+| Actions: precision | 100.0% | 100.0% |
+| Actions: recall | 100.0% | 100.0% |
+| Actions: F1 | 100.0% | 100.0% |
+| Actions: TP / FP / FN | 18 / 0 / 0 | 18 / 0 / 0 |
+| Actions: owner accuracy (matched) | 100.0% | 100.0% |
+| Actions: deadline accuracy (matched) | 100.0% | 100.0% |
+| Actions: priority accuracy (where labelled) | 100.0% (n=7) | 100.0% (n=7) |
+| Actions: found with all fields correct | 18/18 (100.0%) | 18/18 (100.0%) |
+| Classify: primary category accuracy | 6/6 (100.0%) | 6/6 (100.0%) |
+| Classify: label precision, all returned labels | 60.0% (FP=4) | 54.5% (FP=5) |
+| Classify: label recall, all returned labels | 100.0% | 100.0% |
+| Classify: label precision, confidence >= 0.5 | 100.0% (FP=0) | 100.0% (FP=0) |
+| Classify: label recall, confidence >= 0.5 | 100.0% | 100.0% |
+| Classify: language accuracy | 6/6 (100.0%) | 6/6 (100.0%) |
+| Latency per call, mean (s) | 2.37 | 2.57 |
+| Latency per call, median (s) | 2.47 | 1.82 |
+| Latency per call, min (s) | 0.77 | 1.23 |
+| Latency per call, max (s) | 3.96 | 6.20 |
+
+"Valid JSON and passes schema validation" means the response parsed with `extractor.parse_response` and also passed the stricter check in `eval/run_eval.py` (`schema_errors`): every field in the prompt's schema present with the right type, enum fields limited to the listed values, and confidence between 0 and 1. "Internally consistent" adds: `entity_count` and `action_count` equal the list lengths, `primary_category` is the highest-confidence label, and `word_count_original` is within 10% of the true word count.
+
+Latency is wall-clock time for the provider call, measured from one machine in one run. It includes network time and the model's thinking time, and it will vary.
+
+### How to read these results
+
+Both models score at or near 100% on every accuracy metric. That means this evaluation set is too easy to tell the two models apart, and it should be read as a regression check for the pipeline, not as a benchmark. The differences that did show up were in validity and stability across runs, described under failure cases.
+
+Each model was run once per document in each run. Outputs are not deterministic: in the second run `claude-haiku-5-5` gave a deadline for one action that did not match the gold label (17 of 18 actions fully correct), and in the final run it matched (18 of 18).
+
+### Three runs
+
+The evaluation was run three times as bugs were found and fixed. Each run's raw outputs are kept.
+
+| Run | Extractor state | claude-haiku-5-5 valid | claude-sonnet-5-5 valid |
+|-----|-----------------|------------------------|-------------------------|
+| `eval/results/baseline/` | As originally written, `max_tokens` 1024 | 7/24 (29.2%) | 19/24 (79.2%) |
+| `eval/results/after_fix/` | After the thinking-block fix, `max_tokens` 1024 | 22/24 (91.7%) | 22/24 (91.7%) |
+| `eval/results/final/` | After all fixes, `max_tokens` 4096 | 24/24 (100.0%) | 24/24 (100.0%) |
+
+"Valid" is the "valid JSON and passes schema validation" row.
+
+### Failure cases
+
+**1. Crash on responses that start with a thinking block (baseline run).** The extractor read `response.content[0].text`. Current Anthropic models can return a thinking block first, which has no `text` attribute, so the call raised `AttributeError`. This affected 17 of 24 calls on `claude-haiku-5-5` and 5 of 24 on `claude-sonnet-5-5`. Fixed by reading the text blocks wherever they are in the list.
+
+**2. Truncated JSON at `max_tokens` 1024 (second run).** For both models, `summarize_02` and `summarize_04` came back cut off mid-string and failed to parse. Thinking tokens count against `max_tokens`, so 1024 did not leave enough room for the longer summaries. The extractor also reported this as "invalid JSON", which hid the cause. Fixed in two steps: a response that stops at the token limit now raises `TruncatedResponseError` with a message that says to raise `--max-tokens`, and the default limit is now 4096.
+
+**3. Retired default model.** The original default, `claude-sonnet-4-20250514`, is no longer available. The default is now `claude-sonnet-5-5`.
+
+**4. Low-confidence extra labels in classify (all runs).** Both models add categories with low confidence that are neither required nor accepted as optional in the gold labels. In the final run `claude-haiku-5-5` added "operations" on 4 of 6 documents, and `claude-sonnet-5-5` added 5 such labels on 4 documents ("operations" three times, "research" once, "general" once). Counting every returned label, label precision is 60.0% and 54.5%. In all three runs the confidence on these labels was between 0.05 and 0.35, so precision is 100.0% for both models when only labels with confidence of at least 0.5 are counted. The 0.5 threshold was added to the script after seeing the first run. Anyone using the label list should filter on confidence.
+
+**5. One deadline that did not match the gold label (second run, `claude-haiku-5-5`).** For "draft the methods section before the 1 July group review", the model returned "before the 1 July 2025 group review". The gold label accepts the date or "before the 1 July group review" without the year, so this was scored as an error. It is arguably a gap in the label, not a model mistake. The label was left unchanged.
+
+No other errors were observed in the final run: no missed or invented entities, no missed or spurious action items (including the document with completed and cancelled tasks), and no wrong primary category or language.
+
+### Matching rules
+
+Exact match is used where the field has a closed set of values. Free-text fields use the rules below. They are implemented in the `score_*` functions in `eval/run_eval.py` and tested in `eval/test_run_eval.py`.
+
+**Entities**
+
+- Names are compared after lowercasing, Unicode normalization, collapsing whitespace, and stripping outer punctuation and a leading "the".
+- A predicted entity matches a gold entity when its name equals the gold name or one of its listed aliases, and its type equals the gold type. A few gold entities accept two types where both are defensible (a hospital as ORG or LOCATION).
+- Predictions are de-duplicated on name and type. A repeat of an already matched entity is ignored.
+- Predictions that match a gold "optional" entity (vague dates, role words) are ignored: not rewarded and not penalized.
+- A correct name with the wrong type counts as one false positive and one false negative.
+- Precision, recall, and F1 are micro-averaged over all 6 documents. "Recall on name only" ignores the type.
+
+**Actions**
+
+- Task text is free-form, so a predicted action is paired with a gold action when every gold keyword appears in the predicted task (case-insensitive). Each prediction can be paired once. Unpaired predictions are false positives and unpaired gold actions are false negatives.
+- Owner: normalized text must be in the gold accept list (for example "hana" or "hana suzuki"). The literal "unassigned" is required when the text names nobody.
+- Deadline: normalized text must be in the gold accept list, or parse to the same calendar date as the gold date, with a missing year taken from the gold date. The literal "none" is required when there is no deadline.
+- Priority: exact match, scored only for the 7 actions where the text signals a priority. For the other 11 the gold priority is null and is not scored.
+- "Found with all fields correct" is the share of gold actions that were paired and had owner, deadline, and (where labelled) priority all correct.
+
+**Classify**
+
+- Primary category and language: exact match after lowercasing. Language accepts the name or the ISO code ("spanish" or "es").
+- Label list: each required gold label must be present. Labels marked optional in the gold file are ignored. Any other label is a false positive. Reported for all returned labels and for labels with confidence of at least 0.5.
+
+**Summarize is not scored for accuracy.** A summary is free text with many acceptable wordings, and exact or keyword matching against a reference would mostly measure phrasing. Scoring it properly needs human rating or a model-based judge, which would add its own errors and was out of scope. Summarize outputs are included in the validity, consistency, and latency rows, and the gold files hold a reference summary for reading the outputs by hand.
+
+### Reproducing
 
 ```bash
-pytest tests.py -v
+# Recompute the scores from the saved raw outputs (no API calls)
+python eval/run_eval.py --label final --score-only
+
+# Run again against the API (writes to eval/results/<label>/)
+export ANTHROPIC_API_KEY="sk-ant-..."
+python eval/run_eval.py --label my_run \
+  --run anthropic:claude-haiku-5-5 --run anthropic:claude-sonnet-5-5
+
+# Add an OpenAI model
+python eval/run_eval.py --label my_run --run openai:gpt-4o-mini
 ```
+
+A provider whose API key is not set is skipped with a message. A new API run will not reproduce the saved outputs exactly, because model outputs vary between runs.
+
+## Testing
+
+The unit tests use mocked provider responses, so they need no API key.
+
+```bash
+pytest tests.py eval/test_run_eval.py -v
+```
+
+`tests.py` covers prompt rendering, JSON parsing, required-key validation, Anthropic response handling, truncation detection, and end-to-end extraction with mocked providers. `eval/test_run_eval.py` covers the scoring rules and checks that the gold labels score 100% against themselves.
 
 ## Project Structure
 
 ```
 ai-structured-extractor/
-├── extractor.py          # Core pipeline: prompts, API calls, parsing, CLI
-├── tests.py              # Unit + integration tests (mocked providers)
-├── requirements.txt
+├── extractor.py            # prompts, provider calls, parsing, CLI
+├── tests.py                # unit and integration tests (mocked providers)
+├── eval/
+│   ├── documents/          # 24 synthetic input documents
+│   ├── gold/               # gold labels, one JSON file per document
+│   ├── results/            # raw model outputs and score summaries per run
+│   ├── run_eval.py         # evaluation script
+│   ├── test_run_eval.py    # tests for the scoring rules
+│   └── README.md           # gold label format
 ├── examples/
-│   ├── meeting_notes.txt # AEC project kickoff meeting
-│   └── rfi_document.txt  # Construction RFI (request for information)
+│   ├── meeting_notes.txt   # project kickoff meeting
+│   └── rfi_document.txt    # construction RFI (request for information)
+├── requirements.txt
 └── README.md
 ```
 
-## How It Works (Technical Detail)
+## How It Works
 
-**Prompt Engineering:** Each extraction mode uses a template with an explicit JSON schema embedded in the prompt. The system message constrains the LLM to output only valid JSON. This approach is more reliable than asking for "structured output" without specifying the shape.
+**Prompts.** Each mode has a template with the expected JSON schema written out. The system message tells the model to return only JSON.
 
-**Output Parsing:** The parser handles common LLM failure modes — markdown code fences around JSON, missing keys, malformed responses — and raises descriptive errors rather than silent failures. This is critical in production: you need to know *why* an extraction failed, not just that it did.
+**Parsing.** `parse_response` strips markdown code fences if present, parses the JSON, and checks the required keys for the mode. Failures raise `ParseError` with the reason and the start of the raw response. A response cut off at the token limit raises `TruncatedResponseError`.
 
-**Provider Abstraction:** Both Anthropic and OpenAI are wrapped behind a common call signature `(model, system, user, max_tokens) → str`. Adding a new provider (e.g., Mistral, local Ollama) is ~10 lines.
+**Providers.** Each provider is a function with the signature `(model, system, user, max_tokens) -> str`. Adding one means writing that function and adding an entry to `PROVIDERS`.
+
+## Known Limitations
+
+- `parse_response` checks that required keys exist. It does not check field types or enum values. The stricter check lives in `eval/run_eval.py` and is not applied at extraction time.
+- There is no retry on a failed or truncated response.
+- The OpenAI path has not been run against the live API in this evaluation.
 
 ## License
 
