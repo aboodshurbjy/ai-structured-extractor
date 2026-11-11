@@ -44,6 +44,8 @@ def _text_from_anthropic_response(response) -> str:
     The content list can start with non-text blocks (current models return a
     thinking block first), so the text is not always at index 0.
     """
+    if getattr(response, "stop_reason", None) == "max_tokens":
+        raise TruncatedResponseError(_TRUNCATED_MESSAGE)
     text = "".join(
         block.text for block in response.content if getattr(block, "type", None) == "text"
     )
@@ -68,7 +70,15 @@ def _call_openai(model: str, system: str, user: str, max_tokens: int) -> str:
             {"role": "user", "content": user},
         ],
     )
-    return response.choices[0].message.content
+    return _text_from_openai_response(response)
+
+
+def _text_from_openai_response(response) -> str:
+    """Return the message text, or raise if the output was cut off."""
+    choice = response.choices[0]
+    if getattr(choice, "finish_reason", None) == "length":
+        raise TruncatedResponseError(_TRUNCATED_MESSAGE)
+    return choice.message.content
 
 
 PROVIDERS = {
@@ -192,6 +202,18 @@ REQUIRED_KEYS: dict[str, list[str]] = {
 
 class ParseError(Exception):
     """Raised when the LLM response cannot be parsed into valid JSON."""
+
+
+class TruncatedResponseError(ParseError):
+    """Raised when the provider stopped at the max_tokens limit, so the JSON
+    is incomplete. On models that think before answering, thinking tokens
+    count against the same limit."""
+
+
+_TRUNCATED_MESSAGE = (
+    "The response was cut off at the max_tokens limit, so the JSON is incomplete. "
+    "Retry with a higher --max-tokens value."
+)
 
 
 def parse_response(raw: str, mode: str) -> dict:

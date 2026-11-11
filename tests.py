@@ -16,6 +16,8 @@ from types import SimpleNamespace
 from unittest.mock import patch, MagicMock
 from extractor import (
     _text_from_anthropic_response,
+    _text_from_openai_response,
+    TruncatedResponseError,
     parse_response,
     ParseError,
     extract,
@@ -244,7 +246,40 @@ class TestAnthropicResponseText:
 
     def test_no_text_block_raises_parse_error(self):
         response = self._response(
-            SimpleNamespace(type="thinking", thinking=""), stop_reason="max_tokens"
+            SimpleNamespace(type="thinking", thinking=""), stop_reason="refusal"
         )
-        with pytest.raises(ParseError, match="max_tokens"):
+        with pytest.raises(ParseError, match="refusal"):
             _text_from_anthropic_response(response)
+
+
+# -- Truncated responses ------------------------------------------------------
+
+class TestTruncatedResponses:
+    """A response cut off at max_tokens must be reported as truncated, not as
+    generic invalid JSON."""
+
+    def test_anthropic_max_tokens_stop_raises_truncated(self):
+        response = SimpleNamespace(
+            content=[SimpleNamespace(type="text", text='{"title": "Cut off he')],
+            stop_reason="max_tokens",
+        )
+        with pytest.raises(TruncatedResponseError, match="max_tokens"):
+            _text_from_anthropic_response(response)
+
+    def test_openai_length_finish_raises_truncated(self):
+        response = SimpleNamespace(choices=[SimpleNamespace(
+            finish_reason="length",
+            message=SimpleNamespace(content='{"title": "Cut off he'),
+        )])
+        with pytest.raises(TruncatedResponseError, match="max_tokens"):
+            _text_from_openai_response(response)
+
+    def test_openai_normal_finish_returns_content(self):
+        response = SimpleNamespace(choices=[SimpleNamespace(
+            finish_reason="stop", message=SimpleNamespace(content='{"a": 1}'),
+        )])
+        assert _text_from_openai_response(response) == '{"a": 1}'
+
+    def test_truncated_error_is_a_parse_error(self):
+        """The CLI catches ParseError, so truncation must be a subclass."""
+        assert issubclass(TruncatedResponseError, ParseError)
