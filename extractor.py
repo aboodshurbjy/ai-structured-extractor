@@ -81,6 +81,10 @@ def _text_from_openai_response(response) -> str:
     return choice.message.content
 
 
+# Output token limit per call. Thinking tokens count against it on models that
+# think before answering, so it needs headroom beyond the size of the JSON.
+DEFAULT_MAX_TOKENS = 4096
+
 PROVIDERS = {
     "anthropic": {
         "call_name": "_call_anthropic",
@@ -272,7 +276,7 @@ def extract(
     mode: str = "summarize",
     provider: str = "anthropic",
     model: Optional[str] = None,
-    max_tokens: int = 1024,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
 ) -> ExtractionResult:
     """
     Run the full extraction pipeline:
@@ -352,8 +356,8 @@ examples:
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=1024,
-        help="Max tokens for the LLM response (default: 1024)",
+        default=DEFAULT_MAX_TOKENS,
+        help=f"Max tokens for the LLM response (default: {DEFAULT_MAX_TOKENS})",
     )
     parser.add_argument(
         "--raw",

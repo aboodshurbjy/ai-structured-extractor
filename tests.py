@@ -15,6 +15,7 @@ import pytest
 from types import SimpleNamespace
 from unittest.mock import patch, MagicMock
 from extractor import (
+    DEFAULT_MAX_TOKENS,
     _text_from_anthropic_response,
     _text_from_openai_response,
     TruncatedResponseError,
@@ -283,3 +284,17 @@ class TestTruncatedResponses:
     def test_truncated_error_is_a_parse_error(self):
         """The CLI catches ParseError, so truncation must be a subclass."""
         assert issubclass(TruncatedResponseError, ParseError)
+
+
+class TestDefaultMaxTokens:
+    """1024 tokens truncated summaries on models that think before answering."""
+
+    def test_default_leaves_headroom_for_thinking(self):
+        assert DEFAULT_MAX_TOKENS >= 4096
+
+    @patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key-123"})
+    @patch("extractor._call_anthropic")
+    def test_extract_passes_default_max_tokens_to_provider(self, mock_call):
+        mock_call.return_value = TestExtractE2E.MOCK_SUMMARIZE_RESPONSE
+        extract("Notes.", mode="summarize")
+        assert mock_call.call_args[0][3] == DEFAULT_MAX_TOKENS

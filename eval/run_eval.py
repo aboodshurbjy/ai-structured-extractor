@@ -710,8 +710,8 @@ def main() -> None:
                         help="provider and model to evaluate; repeat for several. "
                              "Default: each provider's default model from extractor.py")
     parser.add_argument("--label", default="latest", help="results go to eval/results/<label>/")
-    parser.add_argument("--max-tokens", type=int, default=1024,
-                        help="max_tokens passed to the provider (default: 1024, the extractor default)")
+    parser.add_argument("--max-tokens", type=int, default=extractor.DEFAULT_MAX_TOKENS,
+                        help="max_tokens passed to the provider (default: the extractor default)")
     parser.add_argument("--score-only", action="store_true",
                         help="recompute scores from saved raw outputs, without calling any API")
     args = parser.parse_args()
