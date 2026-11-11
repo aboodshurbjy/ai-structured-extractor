@@ -40,6 +40,7 @@ MODES = ["summarize", "entities", "actions", "classify"]
 ENTITY_TYPES = {"PERSON", "ORG", "LOCATION", "DATE", "MONEY", "PRODUCT", "OTHER"}
 PRIORITIES = {"high", "medium", "low"}
 SENTIMENTS = {"positive", "neutral", "negative"}
+CONFIDENCE_THRESHOLD = 0.5  # for the "confident labels" classify metrics
 CATEGORIES = {
     "technical", "business", "legal", "financial", "operations",
     "marketing", "hr", "research", "general",
@@ -417,11 +418,19 @@ def score_classify(data: dict, expected: dict) -> dict:
       negative if not). Predicted labels in `optional_categories` are ignored.
       Any other predicted label is a false positive.
     - language: normalized text must be in `language_accept`.
+
+    The label-set counts are computed twice: over every label the model
+    returned, and over labels with confidence >= CONFIDENCE_THRESHOLD only
+    (the `*_confident` keys), since models tend to append low-confidence labels.
     """
-    predicted = set()
+    predicted, confident = set(), set()
     for label in data.get("classifications", []) if isinstance(data.get("classifications"), list) else []:
         if isinstance(label, dict) and isinstance(label.get("category"), str):
-            predicted.add(label["category"].strip().lower())
+            category = label["category"].strip().lower()
+            predicted.add(category)
+            confidence = label.get("confidence")
+            if isinstance(confidence, (int, float)) and confidence >= CONFIDENCE_THRESHOLD:
+                confident.add(category)
     required = set(expected["required_categories"])
     optional = set(expected.get("optional_categories", []))
     primary = data.get("primary_category")
@@ -434,6 +443,9 @@ def score_classify(data: dict, expected: dict) -> dict:
         "tp": len(required & predicted),
         "fn": len(required - predicted),
         "fp": len(extra),
+        "tp_confident": len(required & confident),
+        "fn_confident": len(required - confident),
+        "fp_confident": len(confident - required - optional),
         "extra_labels": extra,
         "predicted_labels": sorted(predicted),
         "language_correct": norm(data.get("language")) in {norm(a) for a in expected["language_accept"]},
@@ -563,6 +575,11 @@ def summarize_run(records: list[dict], items: dict[str, dict]) -> dict:
         "language_accuracy": total(cls, "language_correct") / len(cls) if cls else None,
         "label_tp": total(cls, "tp"), "label_fp": total(cls, "fp"), "label_fn": total(cls, "fn"),
         **prf(total(cls, "tp"), total(cls, "fp"), total(cls, "fn")),
+        "confident": {
+            "label_tp": total(cls, "tp_confident"), "label_fp": total(cls, "fp_confident"),
+            "label_fn": total(cls, "fn_confident"),
+            **prf(total(cls, "tp_confident"), total(cls, "fp_confident"), total(cls, "fn_confident")),
+        },
     }
 
     failures = []
@@ -583,7 +600,7 @@ def summarize_run(records: list[dict], items: dict[str, dict]) -> dict:
             problems.append(
                 f"primary_category '{score['primary_predicted']}', expected '{score['primary_expected']}'"
             )
-        problems += [f"extra label: {m}" for m in score.get("extra_labels", [])]
+        problems += [f"extra label (any confidence): {m}" for m in score.get("extra_labels", [])]
         if score.get("language_correct") is False:
             problems.append(f"language '{score['language_predicted']}' not accepted")
         if problems:
@@ -661,8 +678,13 @@ def render_markdown(summaries: dict[str, dict]) -> str:
         lambda s: f"{s['actions']['all_fields_correct']}/{s['actions']['gold_actions']} ({pct(s['actions']['exact_action_rate'])})")
     add("Classify: primary category accuracy",
         lambda s: f"{s['classify']['primary_correct']}/{s['classify']['documents_scored']} ({pct(s['classify']['primary_accuracy'])})")
-    add("Classify: label precision", lambda s: pct(s["classify"]["precision"]))
-    add("Classify: label recall", lambda s: pct(s["classify"]["recall"]))
+    add("Classify: label precision, all returned labels",
+        lambda s: f"{pct(s['classify']['precision'])} (FP={s['classify']['label_fp']})")
+    add("Classify: label recall, all returned labels", lambda s: pct(s["classify"]["recall"]))
+    add(f"Classify: label precision, confidence >= {CONFIDENCE_THRESHOLD}",
+        lambda s: f"{pct(s['classify']['confident']['precision'])} (FP={s['classify']['confident']['label_fp']})")
+    add(f"Classify: label recall, confidence >= {CONFIDENCE_THRESHOLD}",
+        lambda s: pct(s["classify"]["confident"]["recall"]))
     add("Classify: language accuracy",
         lambda s: f"{s['classify']['language_correct']}/{s['classify']['documents_scored']} ({pct(s['classify']['language_accuracy'])})")
     for stat in ("mean", "median", "min", "max"):

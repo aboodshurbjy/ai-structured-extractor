@@ -193,6 +193,8 @@ def test_classify_optional_label_ignored_and_extra_label_penalized():
     assert score["primary_correct"] and score["language_correct"]
     assert (score["tp"], score["fp"], score["fn"]) == (1, 1, 0)
     assert score["extra_labels"] == ["hr"]
+    # only marketing (0.9) clears the 0.5 confidence threshold
+    assert (score["tp_confident"], score["fp_confident"], score["fn_confident"]) == (1, 0, 0)
 
 
 # -- schema and consistency ---------------------------------------------------
