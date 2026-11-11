@@ -74,7 +74,7 @@ def _call_openai(model: str, system: str, user: str, max_tokens: int) -> str:
 PROVIDERS = {
     "anthropic": {
         "call_name": "_call_anthropic",
-        "default_model": "claude-sonnet-4-20250514",
+        "default_model": "claude-sonnet-5-5",
         "env_key": "ANTHROPIC_API_KEY",
     },
     "openai": {
