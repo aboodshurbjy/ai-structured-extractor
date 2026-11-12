@@ -1,10 +1,10 @@
 """
 AI Structured Extractor
 ========================
-A lightweight pipeline that takes unstructured text, sends it to an LLM API
-with engineered prompts, and returns validated structured output.
+Sends text to an LLM with a prompt for the chosen mode and returns the
+parsed JSON.
 
-Supports multiple extraction modes:
+Modes:
   - summarize:  Executive summary + key points
   - entities:   Named entity extraction with types and context
   - actions:    Action items with owners, deadlines, and priority
@@ -105,7 +105,7 @@ def _get_caller(provider_key: str):
     return getattr(_self, PROVIDERS[provider_key]["call_name"])
 
 # ---------------------------------------------------------------------------
-# Prompt templates  (the prompt engineering layer)
+# Prompt templates
 # ---------------------------------------------------------------------------
 
 SYSTEM_PREAMBLE = (
@@ -224,14 +224,11 @@ def parse_response(raw: str, mode: str) -> dict:
     """
     Parse the raw LLM text into a validated Python dict.
 
-    Steps:
-      1. Strip markdown fences if present (common LLM quirk)
-      2. Parse JSON
-      3. Validate required keys for the given mode
+
+    Models sometimes wrap the JSON in ```json ... ``` fences, so those are
+    stripped first. Then the required keys for the mode are checked.
     """
     cleaned = raw.strip()
-
-    # Strip ```json ... ``` wrappers
     if cleaned.startswith("```"):
         lines = cleaned.splitlines()
         lines = [l for l in lines if not l.strip().startswith("```")]
@@ -279,11 +276,8 @@ def extract(
     max_tokens: int = DEFAULT_MAX_TOKENS,
 ) -> ExtractionResult:
     """
-    Run the full extraction pipeline:
-      1. Select prompt template for the given mode
-      2. Call the LLM provider
-      3. Parse and validate the structured output
-      4. Return an ExtractionResult
+    Build the prompt for the mode, call the provider, and parse the response
+    into an ExtractionResult.
     """
     if mode not in MODE_PROMPTS:
         raise ValueError(f"Unknown mode '{mode}'. Choose from: {list(MODE_PROMPTS)}")
@@ -292,7 +286,6 @@ def extract(
 
     prov = PROVIDERS[provider]
 
-    # Check for API key
     if not os.environ.get(prov["env_key"]):
         raise EnvironmentError(
             f"Set the {prov['env_key']} environment variable before running."
@@ -367,7 +360,6 @@ examples:
 
     args = parser.parse_args()
 
-    # Read input
     if args.input == "-":
         text = sys.stdin.read()
     else:
@@ -390,7 +382,6 @@ examples:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
 
-    # Output
     print(result.to_json())
 
     if args.raw:

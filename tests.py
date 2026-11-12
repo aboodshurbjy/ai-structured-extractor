@@ -83,7 +83,7 @@ class TestParseResponse:
         assert result["primary_category"] == "technical"
 
     def test_strips_markdown_fences(self):
-        """LLMs sometimes wrap JSON in ```json ... ``` -- parser should handle it."""
+        """LLMs sometimes wrap JSON in ```json ... ```. The parser should handle it."""
         inner = json.dumps({
             "title": "Test",
             "summary": "A test.",
@@ -112,7 +112,7 @@ class TestParseResponse:
 # -- Prompt templates ---------------------------------------------------------
 
 class TestPromptTemplates:
-    """Ensure every mode has a prompt and the text placeholder works."""
+    """Every mode has a prompt and the text placeholder works."""
 
     @pytest.mark.parametrize("mode", MODE_PROMPTS.keys())
     def test_template_has_text_placeholder(self, mode):
@@ -156,7 +156,6 @@ class TestExtractE2E:
         assert result.data["title"] == "Project Kickoff"
         assert len(result.data["key_points"]) == 3
 
-        # Verify the API was called with the right structure
         mock_call.assert_called_once()
         call_args = mock_call.call_args
         assert call_args[0][1] == SYSTEM_PREAMBLE  # system prompt
