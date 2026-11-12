@@ -2,7 +2,7 @@
 
 A small Python pipeline that sends unstructured text to an LLM with a mode-specific prompt and returns parsed, checked JSON. It supports Anthropic and OpenAI models behind one interface, and it comes with a labelled evaluation set and a script that scores the output.
 
-## What It Does
+## Modes
 
 Give it text (meeting notes, emails, technical documents) and choose a mode:
 
@@ -17,28 +17,15 @@ The pipeline builds the prompt, calls the provider, parses the response, checks 
 
 ## Architecture
 
-```
-┌─────────────┐     ┌──────────────────┐     ┌───────────────┐     ┌────────────┐
-│  Raw Text   │ ──► │  Prompt Engine   │ ──► │  LLM Provider │ ──► │  Parser &  │
-│  (file/     │     │  (mode-specific  │     │  (Anthropic / │     │  Validator │
-│   stdin)    │     │   templates)     │     │   OpenAI)     │     │  (JSON +   │
-└─────────────┘     └──────────────────┘     └───────────────┘     │  schema)   │
-                                                                    └─────┬──────┘
-                                                                          │
-                                                                    ┌─────▼──────┐
-                                                                    │ Structured │
-                                                                    │   Output   │
-                                                                    └────────────┘
-```
+Each mode has a prompt template with the expected JSON shape written out. The system message tells the model to return only JSON.
 
-Design decisions:
+Anthropic and OpenAI share one call signature, `(model, system, user, max_tokens) -> str`, so switching provider is a command-line flag. Adding a provider means writing that function and adding an entry to `PROVIDERS`.
 
-- **Provider abstraction.** Anthropic and OpenAI share one call signature, `(model, system, user, max_tokens) -> str`, so switching provider is a command-line flag.
-- **Explicit schema in the prompt.** Each mode's template spells out the JSON shape the model must return.
-- **Defensive parsing.** The parser strips markdown code fences, checks required keys, and reports truncated responses separately from malformed ones.
-- **Result container.** `ExtractionResult` holds the parsed data and the raw response for debugging.
+`parse_response` strips markdown code fences if present, parses the JSON, and checks the required keys for the mode. Failures raise `ParseError` with the reason and the start of the raw response. A response cut off at the token limit raises `TruncatedResponseError`, so truncation is reported separately from malformed JSON.
 
-## Quick Start
+`ExtractionResult` holds the parsed data and the raw response for debugging.
+
+## Quick start
 
 ```bash
 git clone https://github.com/aboodshurbjy/ai-structured-extractor.git
@@ -59,7 +46,7 @@ echo "Ship the v2 release by Friday. Assign to Jordan." | python extractor.py ac
 
 Default models are `claude-sonnet-5-5` (Anthropic) and `gpt-4o-mini` (OpenAI). Use `--model` to override.
 
-## Example Output
+## Example output
 
 Input: `examples/meeting_notes.txt` (project kickoff notes)
 
@@ -133,15 +120,13 @@ The notes end with an explicit list of 7 action items. The model returned 9: the
 
 ## Evaluation
 
-The repo includes a small labelled evaluation set and a script that scores the extractor against it.
-
 ### What was run
 
-- **Data:** 24 short synthetic documents, 6 per mode, in `eval/documents/`, with gold labels in `eval/gold/`. They vary in domain and difficulty and include informal, messy text and edge cases (a document with no entities, one with no action items, a two-sentence note). The label format is described in `eval/README.md`.
-- **Provenance:** the documents and gold labels were drafted with AI assistance and reviewed by me.
-- **Models:** `claude-haiku-5-5` and `claude-sonnet-5-5`. The evaluation was run on Anthropic models only. The OpenAI code path was not evaluated and is covered only by unit tests with mocked responses.
-- **Settings:** the extractor's own prompts, call function, and parser, with the default `max_tokens` of 4096. One call per document per model, run sequentially on 2026-11-10.
-- **Sample size:** 24 documents per model. For the scored modes this is 38 gold entities across 6 documents, 18 gold action items across 6 documents (7 of them with a labelled priority), and 6 classification documents.
+- The data is 24 short synthetic documents, 6 per mode, in `eval/documents/`, with gold labels in `eval/gold/`. They vary in domain and difficulty and include informal, messy text and edge cases (a document with no entities, one with no action items, a two-sentence note). The label format and the matching rules are in [eval/README.md](eval/README.md).
+- The documents and gold labels were drafted with AI assistance and reviewed by me.
+- The models were `claude-haiku-5-5` and `claude-sonnet-5-5`. I ran the evaluation on Anthropic models only. The OpenAI code path was not evaluated and is covered only by unit tests with mocked responses.
+- Each run used the extractor's own prompts, call function, and parser, with the default `max_tokens` of 4096. One call per document per model, run sequentially on 2026-11-10.
+- That is 24 documents per model. For the scored modes this is 38 gold entities across 6 documents, 18 gold action items across 6 documents (7 of them with a labelled priority), and 6 classification documents.
 
 24 documents is a small sample. The results below show that the pipeline works on this set. They do not support claims about accuracy in general, and one more or one fewer error would move most of these percentages by several points.
 
@@ -185,15 +170,15 @@ Final run, raw outputs in `eval/results/final/`:
 
 Latency is wall-clock time for the provider call, measured from one machine in one run. It includes network time and the model's thinking time, and it will vary.
 
-### How to read these results
+### Reading the results
 
-Both models score at or near 100% on every accuracy metric. That means this evaluation set is too easy to tell the two models apart, and it should be read as a regression check for the pipeline, not as a benchmark. The differences that did show up were in validity and stability across runs, described under failure cases.
+Both models score at or near 100% on every accuracy metric. This evaluation set is too easy to tell the two models apart. I use it as a regression check for the pipeline, and it is not a benchmark. The differences that did show up were in validity and stability across runs, described under failure cases.
 
 Each model was run once per document in each run. Outputs are not deterministic: in the second run `claude-haiku-5-5` gave a deadline for one action that did not match the gold label (17 of 18 actions fully correct), and in the final run it matched (18 of 18).
 
 ### Three runs
 
-The evaluation was run three times as bugs were found and fixed. Each run's raw outputs are kept.
+I ran the evaluation three times as I found and fixed bugs. Each run's raw outputs are kept.
 
 | Run | Extractor state | claude-haiku-5-5 valid | claude-sonnet-5-5 valid |
 |-----|-----------------|------------------------|-------------------------|
@@ -205,45 +190,21 @@ The evaluation was run three times as bugs were found and fixed. Each run's raw 
 
 ### Failure cases
 
-**1. Crash on responses that start with a thinking block (baseline run).** The extractor read `response.content[0].text`. Current Anthropic models can return a thinking block first, which has no `text` attribute, so the call raised `AttributeError`. This affected 17 of 24 calls on `claude-haiku-5-5` and 5 of 24 on `claude-sonnet-5-5`. Fixed by reading the text blocks wherever they are in the list.
+1. Crash on responses that start with a thinking block (baseline run). The extractor read `response.content[0].text`. Current Anthropic models can return a thinking block first, which has no `text` attribute, so the call raised `AttributeError`. This affected 17 of 24 calls on `claude-haiku-5-5` and 5 of 24 on `claude-sonnet-5-5`. Fixed by reading the text blocks wherever they are in the list.
 
-**2. Truncated JSON at `max_tokens` 1024 (second run).** For both models, `summarize_02` and `summarize_04` came back cut off mid-string and failed to parse. Thinking tokens count against `max_tokens`, so 1024 did not leave enough room for the longer summaries. The extractor also reported this as "invalid JSON", which hid the cause. Fixed in two steps: a response that stops at the token limit now raises `TruncatedResponseError` with a message that says to raise `--max-tokens`, and the default limit is now 4096.
+2. Truncated JSON at `max_tokens` 1024 (second run). For both models, `summarize_02` and `summarize_04` came back cut off mid-string and failed to parse. Thinking tokens count against `max_tokens`, so 1024 did not leave enough room for the longer summaries. The extractor also reported this as "invalid JSON", which hid the cause. Fixed in two steps: a response that stops at the token limit now raises `TruncatedResponseError` with a message that says to raise `--max-tokens`, and the default limit is now 4096.
 
-**3. Retired default model.** The original default, `claude-sonnet-4-20250514`, is no longer available. The default is now `claude-sonnet-5-5`.
+3. Retired default model. The original default, `claude-sonnet-4-20250514`, is no longer available. The default is now `claude-sonnet-5-5`.
 
-**4. Low-confidence extra labels in classify (all runs).** Both models add categories with low confidence that are neither required nor accepted as optional in the gold labels. In the final run `claude-haiku-5-5` added "operations" on 4 of 6 documents, and `claude-sonnet-5-5` added 5 such labels on 4 documents ("operations" three times, "research" once, "general" once). Counting every returned label, label precision is 60.0% and 54.5%. In all three runs the confidence on these labels was between 0.05 and 0.35, so precision is 100.0% for both models when only labels with confidence of at least 0.5 are counted. The 0.5 threshold was added to the script after seeing the first run. Anyone using the label list should filter on confidence.
+4. Low-confidence extra labels in classify (all runs). Both models add categories with low confidence that are neither required nor accepted as optional in the gold labels. In the final run `claude-haiku-5-5` added "operations" on 4 of 6 documents, and `claude-sonnet-5-5` added 5 such labels on 4 documents ("operations" three times, "research" once, "general" once). Counting every returned label, label precision is 60.0% and 54.5%. In all three runs the confidence on these labels was between 0.05 and 0.35, so precision is 100.0% for both models when only labels with confidence of at least 0.5 are counted. The 0.5 threshold was added to the script after seeing the first run. Anyone using the label list should filter on confidence.
 
-**5. One deadline that did not match the gold label (second run, `claude-haiku-5-5`).** For "draft the methods section before the 1 July group review", the model returned "before the 1 July 2025 group review". The gold label accepts the date or "before the 1 July group review" without the year, so this was scored as an error. It is arguably a gap in the label, not a model mistake. The label was left unchanged.
+5. One deadline that did not match the gold label (second run, `claude-haiku-5-5`). For "draft the methods section before the 1 July group review", the model returned "before the 1 July 2025 group review". The gold label accepts the date or "before the 1 July group review" without the year, so this was scored as an error. I think the label is too narrow here. I left it unchanged.
 
 No other errors were observed in the final run: no missed or invented entities, no missed or spurious action items (including the document with completed and cancelled tasks), and no wrong primary category or language.
 
 ### Matching rules
 
-Exact match is used where the field has a closed set of values. Free-text fields use the rules below. They are implemented in the `score_*` functions in `eval/run_eval.py` and tested in `eval/test_run_eval.py`.
-
-**Entities**
-
-- Names are compared after lowercasing, Unicode normalization, collapsing whitespace, and stripping outer punctuation and a leading "the".
-- A predicted entity matches a gold entity when its name equals the gold name or one of its listed aliases, and its type equals the gold type. A few gold entities accept two types where both are defensible (a hospital as ORG or LOCATION).
-- Predictions are de-duplicated on name and type. A repeat of an already matched entity is ignored.
-- Predictions that match a gold "optional" entity (vague dates, role words) are ignored: not rewarded and not penalized.
-- A correct name with the wrong type counts as one false positive and one false negative.
-- Precision, recall, and F1 are micro-averaged over all 6 documents. "Recall on name only" ignores the type.
-
-**Actions**
-
-- Task text is free-form, so a predicted action is paired with a gold action when every gold keyword appears in the predicted task (case-insensitive). Each prediction can be paired once. Unpaired predictions are false positives and unpaired gold actions are false negatives.
-- Owner: normalized text must be in the gold accept list (for example "hana" or "hana suzuki"). The literal "unassigned" is required when the text names nobody.
-- Deadline: normalized text must be in the gold accept list, or parse to the same calendar date as the gold date, with a missing year taken from the gold date. The literal "none" is required when there is no deadline.
-- Priority: exact match, scored only for the 7 actions where the text signals a priority. For the other 11 the gold priority is null and is not scored.
-- "Found with all fields correct" is the share of gold actions that were paired and had owner, deadline, and (where labelled) priority all correct.
-
-**Classify**
-
-- Primary category and language: exact match after lowercasing. Language accepts the name or the ISO code ("spanish" or "es").
-- Label list: each required gold label must be present. Labels marked optional in the gold file are ignored. Any other label is a false positive. Reported for all returned labels and for labels with confidence of at least 0.5.
-
-**Summarize is not scored for accuracy.** A summary is free text with many acceptable wordings, and exact or keyword matching against a reference would mostly measure phrasing. Scoring it properly needs human rating or a model-based judge, which would add its own errors and was out of scope. Summarize outputs are included in the validity, consistency, and latency rows, and the gold files hold a reference summary for reading the outputs by hand.
+Exact match is used where the field has a closed set of values. Free-text fields (entity names, action tasks, owners, deadlines) use looser rules, which are written out in [eval/README.md](eval/README.md). They are implemented in the `score_*` functions in `eval/run_eval.py` and tested in `eval/test_run_eval.py`. Summarize is not scored for accuracy.
 
 ### Reproducing
 
@@ -272,35 +233,22 @@ pytest tests.py eval/test_run_eval.py -v
 
 `tests.py` covers prompt rendering, JSON parsing, required-key validation, Anthropic response handling, truncation detection, and end-to-end extraction with mocked providers. `eval/test_run_eval.py` covers the scoring rules and checks that the gold labels score 100% against themselves.
 
-## Project Structure
+## Layout
 
-```
-ai-structured-extractor/
-├── extractor.py            # prompts, provider calls, parsing, CLI
-├── tests.py                # unit and integration tests (mocked providers)
-├── eval/
-│   ├── documents/          # 24 synthetic input documents
-│   ├── gold/               # gold labels, one JSON file per document
-│   ├── results/            # raw model outputs and score summaries per run
-│   ├── run_eval.py         # evaluation script
-│   ├── test_run_eval.py    # tests for the scoring rules
-│   └── README.md           # gold label format
-├── examples/
-│   ├── meeting_notes.txt   # project kickoff meeting
-│   └── rfi_document.txt    # construction RFI (request for information)
-├── requirements.txt
-└── README.md
-```
+| Path | Contents |
+|---|---|
+| `extractor.py` | prompts, provider calls, parsing, CLI |
+| `tests.py` | unit and integration tests (mocked providers) |
+| `eval/documents/` | 24 synthetic input documents |
+| `eval/gold/` | gold labels, one JSON file per document |
+| `eval/results/` | raw model outputs and score summaries per run |
+| `eval/run_eval.py` | evaluation script |
+| `eval/test_run_eval.py` | tests for the scoring rules |
+| `eval/README.md` | gold label format and matching rules |
+| `examples/meeting_notes.txt` | project kickoff meeting |
+| `examples/rfi_document.txt` | construction RFI (request for information) |
 
-## How It Works
-
-**Prompts.** Each mode has a template with the expected JSON schema written out. The system message tells the model to return only JSON.
-
-**Parsing.** `parse_response` strips markdown code fences if present, parses the JSON, and checks the required keys for the mode. Failures raise `ParseError` with the reason and the start of the raw response. A response cut off at the token limit raises `TruncatedResponseError`.
-
-**Providers.** Each provider is a function with the signature `(model, system, user, max_tokens) -> str`. Adding one means writing that function and adding an entry to `PROVIDERS`.
-
-## Known Limitations
+## Known limitations
 
 - `parse_response` checks that required keys exist. It does not check field types or enum values. The stricter check lives in `eval/run_eval.py` and is not applied at extraction time.
 - There is no retry on a failed or truncated response.
